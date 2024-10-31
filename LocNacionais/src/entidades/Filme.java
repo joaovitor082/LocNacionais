@@ -105,5 +105,8 @@ public class Filme {
     this.disponivel = disponivel;
   }
 
-  
+  public int getIdFilme() {
+    return idFilme;
+  }
+
 }
