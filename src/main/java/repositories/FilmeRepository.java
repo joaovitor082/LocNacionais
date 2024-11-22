@@ -3,6 +3,7 @@ package repositories;
 import entities.Filme;
 import DAO.FilmeDAO;
 import repositories.Interfaces.IFilmeRepository;
+import java.util.List;
 
 public class FilmeRepository implements IFilmeRepository {
     private final FilmeDAO filmeDAO;
@@ -27,11 +28,11 @@ public class FilmeRepository implements IFilmeRepository {
         filmeDAO.deleterPorId(id);
     }
 
-    public void listarTodos(){
-        filmeDAO.listarTodos();
-    }
-
     public void alterarPreco(int id, double novoPreco) {
         filmeDAO.alterarPreco(id, novoPreco);
+    }
+
+    public List<Filme> buscarTodos() {
+        return filmeDAO.listarTodos();
     }
 }

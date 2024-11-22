@@ -8,4 +8,6 @@ public interface IUsuarioRepository {
     void atualizar(Usuario usuario);
     void deleterPorId(int id);
     void listarTodos();
+    boolean checarLogin(String email, String senha);
+    Usuario buscarUsuario(String email, String senha);
 }

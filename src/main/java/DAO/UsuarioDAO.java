@@ -66,6 +66,36 @@ public class UsuarioDAO {
         }
     }
 
+    public boolean checarLogin(String email, String senha) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = null;
+        try {
+            transaction = session.beginTransaction();
+            Usuario usuario = (Usuario) session.createQuery("from Usuario where email = :email")
+                    .setParameter("email", email).uniqueResult();
+            return usuario.getSenha().equals(senha);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public Usuario buscarUsuario(String email, String senha) {
+        Session session = sessionFactory.openSession();
+        try {
+            return (Usuario) session.createQuery("from Usuario where email = :email and senha = :senha")
+                    .setParameter("email", email)
+                    .setParameter("senha", senha)
+                    .uniqueResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            session.close();
+        }
+    }
+
+
     public List<Usuario> listarTodos() {
         Session session = sessionFactory.openSession();
         Transaction transaction = null;

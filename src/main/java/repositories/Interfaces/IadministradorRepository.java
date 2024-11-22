@@ -1,5 +1,7 @@
 package repositories.Interfaces;
 
+import java.util.List;
+
 import entities.Administrador;
 
 public interface IadministradorRepository {
@@ -7,5 +9,5 @@ public interface IadministradorRepository {
     void atualizar(Administrador administrador);
     void deletarPorId(int id);
     Administrador buscarPorId(int id);
-    void listarTodos();
+    List<Administrador> buscarTodos();
 }

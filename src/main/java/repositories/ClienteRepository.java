@@ -3,6 +3,7 @@ package repositories;
 import entities.Cliente;
 import DAO.ClienteDAO;
 import repositories.Interfaces.IClienteRepository;
+import java.util.List;
 
 public class ClienteRepository implements IClienteRepository {
     private final ClienteDAO clienteDAO;
@@ -27,7 +28,7 @@ public class ClienteRepository implements IClienteRepository {
         clienteDAO.deleterPorId(id);
     }
 
-    public void listarTodos(){
-        clienteDAO.listarTodos();
+    public List<Cliente> buscarTodos() {
+        return clienteDAO.listarTodos();
     }
 }

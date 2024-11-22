@@ -8,4 +8,5 @@ public interface IClienteService {
     void reservarFilme(int idCliente, int idFilme);
     void devolverFilme(int idCliente, int idFilme);
     double totalPagar(int idCliente);
+    void listarFilmes();
 }

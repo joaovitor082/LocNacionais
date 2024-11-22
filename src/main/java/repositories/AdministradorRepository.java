@@ -3,6 +3,7 @@ package repositories;
 import DAO.AdministradorDAO;
 import entities.Administrador;
 import repositories.Interfaces.IadministradorRepository;
+import java.util.List;
 
 public class AdministradorRepository implements IadministradorRepository {
     private AdministradorDAO administradorDAO;
@@ -27,8 +28,8 @@ public class AdministradorRepository implements IadministradorRepository {
         return this.administradorDAO.buscarPorId(id);
     }
 
-    public void listarTodos() {
-        this.administradorDAO.listarTodos();
+    public List<Administrador> buscarTodos() {
+        return this.administradorDAO.listarTodos();
     }
     
 }

@@ -1,22 +1,27 @@
 package service;
 
+import java.util.List;
+
 import entities.Administrador;
 import entities.Cliente;
 import entities.Filme;
 import repositories.AdministradorRepository;
 import repositories.ClienteRepository;
 import repositories.FilmeRepository;
+import repositories.UsuarioRepository;
 import repositories.Interfaces.IAdministradorService;
 
 public class AdministradorService implements IAdministradorService {
     private AdministradorRepository administradorRepository;
     private ClienteRepository clienteRepository;
     private FilmeRepository filmeRepository;
+    private UsuarioRepository usuarioRepository;
 
     public AdministradorService() {
         this.administradorRepository = new AdministradorRepository();
         this.clienteRepository = new ClienteRepository();
         this.filmeRepository = new FilmeRepository();
+        this.usuarioRepository = new UsuarioRepository();
     }
 
     //metodos clientes
@@ -38,7 +43,10 @@ public class AdministradorService implements IAdministradorService {
 
     public void listarClientes() {
         try{
-            clienteRepository.listarTodos();
+            List<Cliente> clientes = clienteRepository.buscarTodos();
+            for (Cliente cliente : clientes) {
+                System.out.println("\nID: " + cliente.getIdUsuario() + "\n" + "Nome: " + cliente.getNome() + "\n" + "Email: " + cliente.getEmail() + "\n" + cliente.getEndereco() + "\n" + cliente.getTelefone());
+            }
         } catch (Exception e) {
             System.out.println("Erro ao listar clientes: " + e.getMessage());
         }
@@ -64,7 +72,10 @@ public class AdministradorService implements IAdministradorService {
 
     public void listarFilmes() {
         try{
-            filmeRepository.listarTodos();
+            List<Filme> filmes = filmeRepository.buscarTodos();
+            for (Filme filme : filmes) {
+                System.out.println("\nID: " + filme.getIdFilme() + "\n" + "Titulo: " + filme.getTitulo() + "\n" + "Genero: " + filme.getGenero() + "\n" + "Sinopse: " + filme.getSinopse() + "\n" + "Duração: " + filme.getDuracao() + "\n" + "Classificação: " + filme.getClassificacao() + "\n" + "Diretor: " + filme.getDiretor() + "\n" + "Data de Lançamento: " + filme.getDataLancamento() + "\n" + "Disponivel: " + filme.isDisponivel() + "\n" + "Reservado: " + filme.isReservado() + "\n" + "Preço: " + filme.getPreco() + "\n");
+            }
         } catch (Exception e) {
             System.out.println("Erro ao listar filmes: " + e.getMessage());
         }
@@ -89,6 +100,7 @@ public class AdministradorService implements IAdministradorService {
     public void removerAdministrador(int idAdministrador) {
        try{
             administradorRepository.deletarPorId(idAdministrador);
+            usuarioRepository.deleterPorId(administradorRepository.buscarPorId(idAdministrador).getIdUsuario());
          } catch (Exception e) {
             System.out.println("Erro ao remover administrador: " + e.getMessage());
        }
@@ -96,7 +108,10 @@ public class AdministradorService implements IAdministradorService {
 
     public void listarAdministradores() {
         try{
-            administradorRepository.listarTodos();
+             List<Administrador> administradores = administradorRepository.buscarTodos();
+             for (Administrador administrador2 : administradores) {
+                System.out.println("\nID: " + administrador2.getIdUsuario() + "\n" + "Nome: " + administrador2.getLogin() + "\n" + "Email: " + administrador2.getEmail() + "\n" + "Senha: " + administrador2.getSenha() + "\n");
+             }
         } catch (Exception e) {
             System.out.println("Erro ao listar administradores: " + e.getMessage());
         }

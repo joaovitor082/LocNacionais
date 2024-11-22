@@ -31,5 +31,12 @@ public class UsuarioRepository implements IUsuarioRepository {
         usuarioDAO.listarTodos();
     }
 
+    public boolean checarLogin(String email, String senha){
+        return usuarioDAO.checarLogin(email, senha);
+    }
+
+    public Usuario buscarUsuario(String email, String senha){
+        return usuarioDAO.buscarUsuario(email, senha);
+    }
 }
 
