@@ -3,6 +3,7 @@ package app;
 import java.util.Scanner;
 import entities.Administrador;
 import entities.Cliente;
+import entities.Filme;
 import entities.Usuario;
 import service.AdministradorService;
 import service.ClienteService;
@@ -16,7 +17,7 @@ public class app {
 
     public static void main(String[] args) {
         while (true) {
-            System.out.println("Bem-vindo à Locadora LocNacionais!");
+            System.out.println("\nBem-vindo à Locadora LocNacionais!");
             System.out.print("1 - Login\n2 - Cadastro\n0 - Sair\n: ");
             int opcao = scanner.nextInt();
             scanner.nextLine(); 
@@ -84,7 +85,7 @@ public class app {
     private static void menuAdministrador(Administrador administrador) {
         int opcao;
         do {
-            System.out.println("=== Menu Administrador ===");
+            System.out.println("\n=== Menu Administrador ===");
             System.out.print("1 - Cadastrar Filme\n2 - Remover Filme\n3 - Alterar Preço\n4 - Listar Filmes\n5 - Cadastrar Cliente\n6 - Remover Cliente\n7 - Listar Clientes\n8 - Adicionar Administrador\n9 - Remover Administrador\n10 - Listar Administradores\n0 - Sair\n: ");
             opcao = scanner.nextInt();
             scanner.nextLine(); 
@@ -229,8 +230,9 @@ public class app {
                 case 3:
                     System.out.print("Digite o ID do filme a ser devolvido: ");
                     idFilme = scanner.nextInt();
+                    Filme filme = clienteService.buscarFilme(idFilme);
                     scanner.nextLine();
-                    clienteService.devolverFilme(cliente.getIdUsuario(), idFilme);
+                    clienteService.devolverFilme(cliente, filme);
                     break;
                 case 0:
                     System.out.println("Saindo do menu cliente.");

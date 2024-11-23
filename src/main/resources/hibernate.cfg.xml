@@ -18,5 +18,6 @@
         <mapping class="entities.Administrador"/>
         <mapping class="entities.Cliente"/>
         <mapping class="entities.Filme"/>
+        <mapping class="entities.Carrinho"/>
     </session-factory>
 </hibernate-configuration>

@@ -74,7 +74,7 @@ public class AdministradorService implements IAdministradorService {
         try{
             List<Filme> filmes = filmeRepository.buscarTodos();
             for (Filme filme : filmes) {
-                System.out.println("\nID: " + filme.getIdFilme() + "\n" + "Titulo: " + filme.getTitulo() + "\n" + "Genero: " + filme.getGenero() + "\n" + "Sinopse: " + filme.getSinopse() + "\n" + "Duração: " + filme.getDuracao() + "\n" + "Classificação: " + filme.getClassificacao() + "\n" + "Diretor: " + filme.getDiretor() + "\n" + "Data de Lançamento: " + filme.getDataLancamento() + "\n" + "Disponivel: " + filme.isDisponivel() + "\n" + "Reservado: " + filme.isReservado() + "\n" + "Preço: " + filme.getPreco() + "\n");
+                System.out.println("\nID: " + filme.getIdFilme() + "\n" + "Titulo: " + filme.getTitulo() + "\n" + "Genero: " + filme.getGenero() + "\n" + "Classificação: " + filme.getClassificacao() + "\n" + "Data de Lançamento: " + filme.getDataLancamento() + "\n" + "Disponivel: " + filme.isDisponivel() + "\n" + "Reservado: " + filme.isReservado() + "\n" + "Preço: " + filme.getPreco() + "\n");
             }
         } catch (Exception e) {
             System.out.println("Erro ao listar filmes: " + e.getMessage());
