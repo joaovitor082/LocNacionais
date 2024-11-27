@@ -1,7 +1,6 @@
 package service;
 
 import java.util.List;
-
 import entities.Administrador;
 import entities.Cliente;
 import entities.Filme;
@@ -12,10 +11,10 @@ import repositories.UsuarioRepository;
 import repositories.Interfaces.IAdministradorService;
 
 public class AdministradorService implements IAdministradorService {
-    private AdministradorRepository administradorRepository;
-    private ClienteRepository clienteRepository;
-    private FilmeRepository filmeRepository;
-    private UsuarioRepository usuarioRepository;
+    private final AdministradorRepository administradorRepository;
+    private final ClienteRepository clienteRepository;
+    private final FilmeRepository filmeRepository;
+    private final UsuarioRepository usuarioRepository;
 
     public AdministradorService() {
         this.administradorRepository = new AdministradorRepository();
@@ -24,9 +23,12 @@ public class AdministradorService implements IAdministradorService {
         this.usuarioRepository = new UsuarioRepository();
     }
 
-    //metodos clientes
+    // Métodos Clientes
     public void adicionarCliente(Cliente cliente) {
-        try{
+        try {
+            if (cliente == null) {
+                throw new IllegalArgumentException("Cliente não pode ser nulo.");
+            }
             clienteRepository.salvar(cliente);
         } catch (Exception e) {
             System.out.println("Erro ao adicionar cliente: " + e.getMessage());
@@ -34,27 +36,37 @@ public class AdministradorService implements IAdministradorService {
     }
 
     public void removerCliente(int idCliente) {
-       try{
+        try {
+            if (idCliente <= 0) {
+                throw new IllegalArgumentException("ID do cliente inválido.");
+            }
             clienteRepository.deletarPorId(idCliente);
         } catch (Exception e) {
             System.out.println("Erro ao remover cliente: " + e.getMessage());
-       }
+        }
     }
 
     public void listarClientes() {
-        try{
+        try {
             List<Cliente> clientes = clienteRepository.buscarTodos();
+            if (clientes.isEmpty()) {
+                System.out.println("Nenhum cliente encontrado.");
+                return;
+            }
             for (Cliente cliente : clientes) {
-                System.out.println("\nID: " + cliente.getIdUsuario() + "\n" + "Nome: " + cliente.getNome() + "\n" + "Email: " + cliente.getEmail() + "\n" + cliente.getEndereco() + "\n" + cliente.getTelefone());
+                System.out.println("\nID: " + cliente.getIdUsuario() + "\nNome: " + cliente.getNome() + 
+                    "\nEmail: " + cliente.getEmail() + "\nEndereço: " + cliente.getEndereco() + 
+                    "\nTelefone: " + cliente.getTelefone());
             }
         } catch (Exception e) {
             System.out.println("Erro ao listar clientes: " + e.getMessage());
         }
     }
 
-    //metodos Filmes
-    public void cadastrarFilme(String titulo, String genero, String sinopse, String duracao, String classificacao, String diretor, String dataLancamento, boolean disponivel, boolean reservado, double preco) {
-        try{
+    // Métodos Filmes
+    public void cadastrarFilme(String titulo, String genero, String sinopse, String duracao, String classificacao, 
+            String diretor, String dataLancamento, boolean disponivel, boolean reservado, double preco) {
+        try {
             Filme filme = new Filme(titulo, genero, sinopse, duracao, classificacao, diretor, dataLancamento, disponivel, reservado, preco);
             filmeRepository.salvar(filme);
         } catch (Exception e) {
@@ -63,7 +75,10 @@ public class AdministradorService implements IAdministradorService {
     }
 
     public void removerFilme(int idFilme) {
-        try{
+        try {
+            if (idFilme <= 0) {
+                throw new IllegalArgumentException("ID do filme inválido.");
+            }
             filmeRepository.deleterPorId(idFilme);
         } catch (Exception e) {
             System.out.println("Erro ao remover filme: " + e.getMessage());
@@ -71,10 +86,17 @@ public class AdministradorService implements IAdministradorService {
     }
 
     public void listarFilmes() {
-        try{
+        try {
             List<Filme> filmes = filmeRepository.buscarTodos();
+            if (filmes.isEmpty()) {
+                System.out.println("Nenhum filme encontrado.");
+                return;
+            }
             for (Filme filme : filmes) {
-                System.out.println("\nID: " + filme.getIdFilme() + "\n" + "Titulo: " + filme.getTitulo() + "\n" + "Genero: " + filme.getGenero() + "\n" + "Classificação: " + filme.getClassificacao() + "\n" + "Data de Lançamento: " + filme.getDataLancamento() + "\n" + "Disponivel: " + filme.isDisponivel() + "\n" + "Reservado: " + filme.isReservado() + "\n" + "Preço: " + filme.getPreco() + "\n");
+                System.out.println("\nID: " + filme.getIdFilme() + "\nTítulo: " + filme.getTitulo() + 
+                    "\nGênero: " + filme.getGenero() + "\nClassificação: " + filme.getClassificacao() + 
+                    "\nData de Lançamento: " + filme.getDataLancamento() + "\nDisponível: " + filme.isDisponivel() + 
+                    "\nReservado: " + filme.isReservado() + "\nPreço: " + filme.getPreco());
             }
         } catch (Exception e) {
             System.out.println("Erro ao listar filmes: " + e.getMessage());
@@ -82,15 +104,22 @@ public class AdministradorService implements IAdministradorService {
     }
 
     public void alterarPreco(int idFilme, double novoPreco) {
-        try{
+        try {
+            if (idFilme <= 0 || novoPreco <= 0) {
+                throw new IllegalArgumentException("ID do filme ou preço inválido.");
+            }
             filmeRepository.alterarPreco(idFilme, novoPreco);
         } catch (Exception e) {
             System.out.println("Erro ao alterar preço: " + e.getMessage());
         }
     }
-    //metodos administradores
+
+    // Métodos Administradores
     public void adicionarAdministrador(Administrador administrador) {
-        try{
+        try {
+            if (administrador == null) {
+                throw new IllegalArgumentException("Administrador não pode ser nulo.");
+            }
             administradorRepository.salvar(administrador);
         } catch (Exception e) {
             System.out.println("Erro ao adicionar administrador: " + e.getMessage());
@@ -98,23 +127,30 @@ public class AdministradorService implements IAdministradorService {
     }
 
     public void removerAdministrador(int idAdministrador) {
-       try{
+        try {
+            if (idAdministrador <= 0) {
+                throw new IllegalArgumentException("ID do administrador inválido.");
+            }
             administradorRepository.deletarPorId(idAdministrador);
             usuarioRepository.deleterPorId(administradorRepository.buscarPorId(idAdministrador).getIdUsuario());
-         } catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("Erro ao remover administrador: " + e.getMessage());
-       }
+        }
     }
 
     public void listarAdministradores() {
-        try{
-             List<Administrador> administradores = administradorRepository.buscarTodos();
-             for (Administrador administrador2 : administradores) {
-                System.out.println("\nID: " + administrador2.getIdUsuario() + "\n" + "Nome: " + administrador2.getLogin() + "\n" + "Email: " + administrador2.getEmail() + "\n" + "Senha: " + administrador2.getSenha() + "\n");
-             }
+        try {
+            List<Administrador> administradores = administradorRepository.buscarTodos();
+            if (administradores.isEmpty()) {
+                System.out.println("Nenhum administrador encontrado.");
+                return;
+            }
+            for (Administrador administrador : administradores) {
+                System.out.println("\nID: " + administrador.getIdUsuario() + "\nNome: " + administrador.getLogin() + 
+                    "\nEmail: " + administrador.getEmail() + "\nSenha: " + administrador.getSenha());
+            }
         } catch (Exception e) {
             System.out.println("Erro ao listar administradores: " + e.getMessage());
         }
     }
-
 }

@@ -5,13 +5,15 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+
 import java.util.List;
 
 public class UsuarioDAO {
-    private final SessionFactory sessionFactory;
+    private static final SessionFactory sessionFactory;
 
-    public UsuarioDAO() {
-        this.sessionFactory = new Configuration().configure().buildSessionFactory();
+    // Inicialização estática do SessionFactory
+    static {
+        sessionFactory = new Configuration().configure().buildSessionFactory();
     }
 
     public void salvar(Usuario usuario) {
@@ -23,19 +25,20 @@ public class UsuarioDAO {
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            e.printStackTrace();
+            throw new RuntimeException("Erro ao salvar usuário.", e);
+        } finally {
+            session.close();
         }
     }
 
     public Usuario buscarPorId(int id) {
         Session session = sessionFactory.openSession();
-        Transaction transaction = null;
         try {
-            transaction = session.beginTransaction();
             return session.get(Usuario.class, id);
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException("Erro ao buscar usuário por ID.", e);
+        } finally {
+            session.close();
         }
     }
 
@@ -48,7 +51,9 @@ public class UsuarioDAO {
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            e.printStackTrace();
+            throw new RuntimeException("Erro ao atualizar usuário.", e);
+        } finally {
+            session.close();
         }
     }
 
@@ -58,28 +63,37 @@ public class UsuarioDAO {
         try {
             transaction = session.beginTransaction();
             Usuario usuario = session.get(Usuario.class, id);
-            session.delete(usuario);
-            transaction.commit();
+            if (usuario != null) {
+                session.delete(usuario);
+                transaction.commit();
+            } else {
+                System.out.println("Usuário com ID " + id + " não encontrado.");
+            }
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            e.printStackTrace();
+            throw new RuntimeException("Erro ao deletar usuário.", e);
+        } finally {
+            session.close();
         }
     }
 
     public boolean checarLogin(String email, String senha) {
         Session session = sessionFactory.openSession();
-        Transaction transaction = null;
         try {
-            transaction = session.beginTransaction();
             Usuario usuario = (Usuario) session.createQuery("from Usuario where email = :email")
-                    .setParameter("email", email).uniqueResult();
-            return usuario.getSenha().equals(senha);
-        } catch (Exception e) {
-            e.printStackTrace();
+                    .setParameter("email", email)
+                    .uniqueResult();
+            if (usuario != null) {
+                return usuario.getSenha().equals(senha);
+            }
             return false;
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao checar login.", e);
+        } finally {
+            session.close();
         }
     }
-    
+
     public Usuario buscarUsuario(String email, String senha) {
         Session session = sessionFactory.openSession();
         try {
@@ -88,24 +102,26 @@ public class UsuarioDAO {
                     .setParameter("senha", senha)
                     .uniqueResult();
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException("Erro ao buscar usuário por email e senha.", e);
         } finally {
             session.close();
         }
     }
 
-
     public List<Usuario> listarTodos() {
         Session session = sessionFactory.openSession();
-        Transaction transaction = null;
         try {
-            transaction = session.beginTransaction();
-            return session.createQuery("from Usuario").list();
+            return session.createQuery("from Usuario", Usuario.class).getResultList();
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException("Erro ao listar usuários.", e);
+        } finally {
+            session.close();
         }
     }
 
+    public static void fechar() {
+        if (sessionFactory != null) {
+            sessionFactory.close();
+        }
+    }
 }

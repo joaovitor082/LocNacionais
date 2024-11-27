@@ -1,5 +1,7 @@
 package repositories.Interfaces;
 
+import java.util.List;
+
 import entities.Usuario;
 
 public interface IUsuarioRepository {
@@ -7,7 +9,7 @@ public interface IUsuarioRepository {
     Usuario buscarPorId(int id);
     void atualizar(Usuario usuario);
     void deleterPorId(int id);
-    void listarTodos();
+    List<Usuario> listarTodos();
     boolean checarLogin(String email, String senha);
     Usuario buscarUsuario(String email, String senha);
 }

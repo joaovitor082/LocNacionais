@@ -1,55 +1,57 @@
 package DAO;
 
-import entities.Administrador;
+import entities.Carrinho;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+
 import java.util.List;
 
-public class AdministradorDAO {
-    private static final SessionFactory sessionFactory;
+public class CarrinhoDAO {
+    private final SessionFactory sessionFactory;
 
-    static {
-        sessionFactory = new Configuration().configure().buildSessionFactory();
+    public CarrinhoDAO() {
+        this.sessionFactory = new Configuration().configure().buildSessionFactory();
     }
 
-    public void salvar(Administrador administrador) {
+    public void salvar(Carrinho carrinho) {
         Session session = sessionFactory.openSession();
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
-            session.save(administrador);
+            session.save(carrinho);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            throw new RuntimeException("Erro ao salvar administrador.", e);
+            e.printStackTrace();
         } finally {
             session.close();
         }
     }
 
-    public Administrador buscarPorId(int id) {
+    public Carrinho buscarPorId(int id) {
         Session session = sessionFactory.openSession();
         try {
-            return session.get(Administrador.class, id);
+            return session.get(Carrinho.class, id);
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao buscar administrador por ID.", e);
+            e.printStackTrace();
+            return null;
         } finally {
             session.close();
         }
     }
 
-    public void atualizar(Administrador administrador) {
+    public void atualizar(Carrinho carrinho) {
         Session session = sessionFactory.openSession();
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
-            session.update(administrador);
+            session.update(carrinho);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            throw new RuntimeException("Erro ao atualizar administrador.", e);
+            e.printStackTrace();
         } finally {
             session.close();
         }
@@ -60,35 +62,26 @@ public class AdministradorDAO {
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
-            Administrador administrador = session.get(Administrador.class, id);
-            if (administrador != null) {
-                session.delete(administrador);
-                transaction.commit();
-            } else {
-                System.out.println("Administrador com ID " + id + " não encontrado.");
-            }
+            Carrinho carrinho = session.get(Carrinho.class, id);
+            session.delete(carrinho);
+            transaction.commit();
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            throw new RuntimeException("Erro ao deletar administrador.", e);
+            e.printStackTrace();
         } finally {
             session.close();
         }
     }
 
-    public List<Administrador> listarTodos() {
+    public List<Carrinho> listarTodos() {
         Session session = sessionFactory.openSession();
         try {
-            return session.createQuery("from Administrador", Administrador.class).getResultList();
+            return session.createQuery("from Carrinho").list();
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao listar administradores.", e);
+            e.printStackTrace();
+            return null;
         } finally {
             session.close();
-        }
-    }
-
-    public static void fechar() {
-        if (sessionFactory != null) {
-            sessionFactory.close();
         }
     }
 }

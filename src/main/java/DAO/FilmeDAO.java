@@ -5,13 +5,15 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+
 import java.util.List;
 
 public class FilmeDAO {
-    private final SessionFactory sessionFactory;
+    private static final SessionFactory sessionFactory;
 
-    public FilmeDAO() {
-        this.sessionFactory = new Configuration().configure().buildSessionFactory();
+    // Inicialização estática do SessionFactory
+    static {
+        sessionFactory = new Configuration().configure().buildSessionFactory();
     }
 
     public void salvar(Filme filme) {
@@ -23,19 +25,20 @@ public class FilmeDAO {
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            e.printStackTrace();
+            throw new RuntimeException("Erro ao salvar filme.", e);
+        } finally {
+            session.close();
         }
     }
 
     public Filme buscarPorId(int id) {
         Session session = sessionFactory.openSession();
-        Transaction transaction = null;
         try {
-            transaction = session.beginTransaction();
             return session.get(Filme.class, id);
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException("Erro ao buscar filme por ID.", e);
+        } finally {
+            session.close();
         }
     }
 
@@ -48,7 +51,9 @@ public class FilmeDAO {
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            e.printStackTrace();
+            throw new RuntimeException("Erro ao atualizar filme.", e);
+        } finally {
+            session.close();
         }
     }
 
@@ -58,23 +63,28 @@ public class FilmeDAO {
         try {
             transaction = session.beginTransaction();
             Filme filme = session.get(Filme.class, id);
-            session.delete(filme);
-            transaction.commit();
+            if (filme != null) {
+                session.delete(filme);
+                transaction.commit();
+            } else {
+                System.out.println("Filme com ID " + id + " não encontrado.");
+            }
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            e.printStackTrace();
+            throw new RuntimeException("Erro ao deletar filme.", e);
+        } finally {
+            session.close();
         }
     }
 
     public List<Filme> listarTodos() {
         Session session = sessionFactory.openSession();
-        Transaction transaction = null;
         try {
-            transaction = session.beginTransaction();
-            return session.createQuery("from Filme").list();
+            return session.createQuery("from Filme", Filme.class).getResultList();
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException("Erro ao listar filmes.", e);
+        } finally {
+            session.close();
         }
     }
 
@@ -84,13 +94,24 @@ public class FilmeDAO {
         try {
             transaction = session.beginTransaction();
             Filme filme = session.get(Filme.class, id);
-            filme.setPreco(novoPreco);
-            session.update(filme);
-            transaction.commit();
+            if (filme != null) {
+                filme.setPreco(novoPreco);
+                session.update(filme);
+                transaction.commit();
+            } else {
+                System.out.println("Filme com ID " + id + " não encontrado.");
+            }
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            e.printStackTrace();
+            throw new RuntimeException("Erro ao alterar preço do filme.", e);
+        } finally {
+            session.close();
         }
     }
-    
+
+    public static void fechar() {
+        if (sessionFactory != null) {
+            sessionFactory.close();
+        }
+    }
 }

@@ -3,7 +3,6 @@ package app;
 import java.util.Scanner;
 import entities.Administrador;
 import entities.Cliente;
-import entities.Filme;
 import entities.Usuario;
 import service.AdministradorService;
 import service.ClienteService;
@@ -47,8 +46,8 @@ public class app {
         String senha = scanner.nextLine();
 
         Usuario usuario = usuarioService.buscarUsuario(email, senha);
+
         if (usuario == null) {
-            System.out.println("Email ou senha incorretos. Tente novamente.");
             return;
         }
 
@@ -74,12 +73,11 @@ public class app {
         System.out.println("Digite seu endereço: ");
         String endereco = scanner.nextLine();
 
-        Cliente cliente = new Cliente(endereco, email, senha, cpf, endereco, telefone, nome);
+        Cliente cliente = new Cliente("Cliente", email, senha, cpf, endereco, telefone, nome);
         clienteService.cadastrar(cliente);
 
         System.out.println("Cadastro efetuado com sucesso!");
     }
-
 
     // METODOS ADMINISTRADORES
     private static void menuAdministrador(Administrador administrador) {
@@ -91,44 +89,19 @@ public class app {
             scanner.nextLine(); 
 
             switch (opcao) {
-                case 1:
-                    cadastrarFilme();
-                    break;
-                case 2:
-                    removerFilme();
-                    break;
-                case 3:
-                    alterarPreco();
-                    break;
-                case 4:
-                    administradorService.listarFilmes();
-                    break;
-                case 5:
-                    realizarCadastro();
-                    break;
-                case 6:
-                    removerCliente();
-                    break;
-                case 7:
-                    administradorService.listarClientes();
-                    break;
-                case 8:
-                    adicionarAdministrador();
-                    break;
-                case 9:
-                    removerAdministrador();
-                    break;
-                case 10:
-                    administradorService.listarAdministradores();
-                    break;
-                case 0:
-                    System.out.println("Saindo do menu administrador.");
-                    break;
-                default:
-                    System.out.println("Opção inválida. Tente novamente.");
-                    break;
+                case 1: cadastrarFilme(); break;
+                case 2: removerFilme(); break;
+                case 3: alterarPreco(); break;
+                case 4: administradorService.listarFilmes(); break;
+                case 5: realizarCadastro(); break;
+                case 6: removerCliente(); break;
+                case 7: administradorService.listarClientes(); break;
+                case 8: adicionarAdministrador(); break;
+                case 9: removerAdministrador(); break;
+                case 10: administradorService.listarAdministradores(); break;
+                case 0: System.out.println("Saindo do menu administrador."); break;
+                default: System.out.println("Opção inválida. Tente novamente."); break;
             }
-            
         } while (opcao != 0);
     }
 
@@ -209,42 +182,46 @@ public class app {
     }
 
     // METODOS CLIENTES
-
-    public static void menuCliente(Cliente cliente){
+    public static void menuCliente(Cliente cliente) {
         int opcao;
-        do{
+        do {
             System.out.println("=== Menu Cliente ===");
-            System.out.print("1 - Listar Filmes\n2 - Reservar Filme\n3 - Devolver Filme\n 0 - Sair\n: ");
+            System.out.print("1 - Listar Filmes \n2 - Alugar Filme\n3 - Reservar Filme\n4 - Devolver Filme\n0 - Sair\n: ");
             opcao = scanner.nextInt();
             scanner.nextLine();
-            switch (opcao) {
-                case 1:
-                    clienteService.listarFilmes();
-                    break;
-                case 2:
-                    System.out.print("Digite o ID do filme a ser reservado: ");
-                    int idFilme = scanner.nextInt();
-                    scanner.nextLine();
-                    clienteService.reservarFilme(cliente.getIdUsuario(), idFilme);
-                    break;
-                case 3:
-                    System.out.print("Digite o ID do filme a ser devolvido: ");
-                    idFilme = scanner.nextInt();
-                    Filme filme = clienteService.buscarFilme(idFilme);
-                    scanner.nextLine();
-                    clienteService.devolverFilme(cliente, filme);
-                    break;
-                case 0:
-                    System.out.println("Saindo do menu cliente.");
-                    break;
-                default:
-                    break;
-            }
 
-        }while(opcao != 0);
+            switch (opcao) {
+                case 1: clienteService.listarFilmes(); break;
+                case 2: alugarFilme(cliente); break;
+                case 3: reservarFilme(cliente); break;
+                case 4: devolverFilme(cliente); break;
+                case 0: System.out.println("Saindo do menu cliente."); break;
+                default: System.out.println("Opção inválida. Tente novamente."); break;
+            }
+        } while (opcao != 0);
     }
 
-    public static void listarFilmes(){
-        
+    private static void reservarFilme(Cliente cliente) {
+        System.out.print("Digite o ID do filme a ser reservado: ");
+        int idFilme = scanner.nextInt();
+        scanner.nextLine();
+        clienteService.reservarFilme(cliente.getIdUsuario(), idFilme);
+    }
+
+    private static void devolverFilme(Cliente cliente) {
+        System.out.print("Digite o ID do filme a ser devolvido: ");
+        int idFilme = scanner.nextInt();
+        scanner.nextLine();
+
+        clienteService.devolverFilme(cliente.getIdUsuario(), idFilme);
+    }
+
+    public static void alugarFilme(Cliente cliente) {
+        System.out.print("Digite o ID do filme a ser alugado: ");
+
+        int idFilme = scanner.nextInt();
+        scanner.nextLine();
+
+        clienteService.alugarFilme(cliente.getIdUsuario(), idFilme);
     }
 }
